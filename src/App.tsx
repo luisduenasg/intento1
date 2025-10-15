@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
-import { PhoneFrame } from './components/PhoneFrame'
+//import { PhoneFrame } from './components/PhoneFrame'
 import { BottomNavigation } from './components/BottomNavigation'
 import { AuthScreen } from './components/screens/AuthScreen'
 import { HomeScreen } from './components/screens/HomeScreen'
@@ -15,19 +15,19 @@ const AppContent: React.FC = () => {
 
   if (loading) {
     return (
-      <PhoneFrame>
+      //<PhoneFrame>
         <div className="flex items-center justify-center h-full">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
         </div>
-      </PhoneFrame>
+      //</PhoneFrame>
     )
   }
 
   if (!user) {
     return (
-      <PhoneFrame>
+      //<PhoneFrame>
         <AuthScreen />
-      </PhoneFrame>
+      //</PhoneFrame>
     )
   }
 
@@ -49,12 +49,12 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <PhoneFrame>
+    //<PhoneFrame>
       <div className="relative h-full">
         {renderScreen()}
         <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
-    </PhoneFrame>
+    //</PhoneFrame>
   )
 }
 
