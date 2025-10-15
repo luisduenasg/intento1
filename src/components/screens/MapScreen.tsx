@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Search, MapPin, Phone, Clock, Filter, Navigation } from 'lucide-react'
 import { GoogleMap } from '../GoogleMap'
+import { LeafletMap } from '../LeafletMap'
 
 export const MapScreen: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState('all')
@@ -101,20 +102,7 @@ export const MapScreen: React.FC = () => {
                 }}
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-green-100 flex items-center justify-center rounded-3xl">
-                <div className="text-center p-6">
-                  <MapPin className="text-emerald-600 mx-auto mb-3" size={48} />
-                  <h3 className="text-lg font-bold text-emerald-800 mb-2">Mapa de Centros</h3>
-                  <p className="text-emerald-600 text-sm mb-4">
-                    Configure Google Maps API para ver centros de reciclaje en tiempo real
-                  </p>
-                  <div className="bg-white/70 rounded-xl p-3">
-                    <p className="text-xs text-emerald-700">
-                      📍 {centers.length} centros disponibles en Lima
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <LeafletMap centers={centers} />
             )}
           </div>
         </div>

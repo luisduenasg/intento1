@@ -16,7 +16,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, o
   ]
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-emerald-200/50">
+    <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-emerald-200/50">
       <div className="flex justify-around py-2">
         {tabs.map((tab) => {
           const Icon = tab.icon
