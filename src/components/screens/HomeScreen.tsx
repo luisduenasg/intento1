@@ -13,7 +13,7 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
-  const { profile } = useAuth()
+  const { profile, updateProfile } = useAuth()
   const [showRecycleModal, setShowRecycleModal] = React.useState(false)
   const [showMissionModal, setShowMissionModal] = React.useState(false)
   const [selectedMission, setSelectedMission] = React.useState<Mission | null>(null)
@@ -36,22 +36,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
     setShowRecycleModal(true)
   }
 
-  const handleRecycleComplete = (data: any) => {
-    // Update user points in real time
+  const handleRecycleComplete = async (data: any) => {
     if (profile) {
-      const updatedProfile = {
-        ...profile,
+      await updateProfile({
         points: profile.points + data.points,
         total_recycled: profile.total_recycled + parseFloat(data.weight || '1')
-      }
-      // Update profile through context
-      const { updateProfile } = useAuth()
-      updateProfile({
-        points: updatedProfile.points,
-        total_recycled: updatedProfile.total_recycled
       })
     }
-    
+
     setSuccessData(data)
     setSuccessType('recycle')
     setShowSuccessModal(true)
