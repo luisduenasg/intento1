@@ -33,13 +33,14 @@ export const RecycleModal: React.FC<RecycleModalProps> = ({ isOpen, onClose, onC
   const handleComplete = () => {
     const material = materials.find(m => m.id === formData.materialType)
     const totalPoints = material ? material.points * parseFloat(formData.weight || '1') : 0
-    
+
     onComplete({
       ...formData,
+      location: formData.location || 'No especificado',
       points: Math.round(totalPoints),
-      co2Saved: parseFloat(formData.weight || '1') * 0.5 // Estimación
+      co2Saved: parseFloat(formData.weight || '1') * 0.5
     })
-    
+
     setStep(1)
     setFormData({ materialType: '', weight: '', location: '', qrScanned: false })
     onClose()
@@ -267,10 +268,10 @@ export const RecycleModal: React.FC<RecycleModalProps> = ({ isOpen, onClose, onC
                 </button>
                 <button
                   onClick={handleComplete}
-                  disabled={!formData.weight || !formData.location}
+                  disabled={!formData.weight || parseFloat(formData.weight) <= 0}
                   className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-all duration-300"
                 >
-                  ¡Registrar!
+                  {!formData.weight || parseFloat(formData.weight) <= 0 ? 'Ingresa el peso' : '¡Registrar!'}
                 </button>
               </div>
             </div>
