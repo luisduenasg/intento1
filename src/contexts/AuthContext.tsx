@@ -10,6 +10,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<any>
   signOut: () => Promise<void>
   updateProfile: (updates: any) => Promise<void>
+  saveRecyclingRecord: (data: any) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -174,6 +175,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
+  const saveRecyclingRecord = async (data: any) => {
+    if (!user) throw new Error('No user logged in')
+
+    try {
+      const { error } = await supabase
+        .from('recycling_records')
+        .insert({
+          user_id: user.id,
+          material_type: data.materialType,
+          weight: parseFloat(data.weight),
+          location: data.location || 'No especificado',
+          points_earned: data.points,
+          co2_saved: data.co2Saved,
+        })
+
+      if (error) throw error
+    } catch (error) {
+      console.warn('Could not save recycling record:', error)
+    }
+  }
+
   const value = {
     user,
     profile,
@@ -182,6 +204,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signIn,
     signOut,
     updateProfile,
+    saveRecyclingRecord,
   }
 
   return (

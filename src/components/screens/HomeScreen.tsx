@@ -13,7 +13,7 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
-  const { profile, updateProfile } = useAuth()
+  const { profile, updateProfile, saveRecyclingRecord } = useAuth()
   const [showRecycleModal, setShowRecycleModal] = React.useState(false)
   const [showMissionModal, setShowMissionModal] = React.useState(false)
   const [selectedMission, setSelectedMission] = React.useState<Mission | null>(null)
@@ -42,6 +42,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         points: profile.points + data.points,
         total_recycled: profile.total_recycled + parseFloat(data.weight || '1')
       })
+      await saveRecyclingRecord(data)
     }
 
     setSuccessData(data)

@@ -8,6 +8,7 @@ import { MissionsScreen } from './components/screens/MissionsScreen'
 import { MapScreen } from './components/screens/MapScreen'
 import { RewardsScreen } from './components/screens/RewardsScreen'
 import { ProfileScreen } from './components/screens/ProfileScreen'
+import { HistoryScreen } from './components/screens/HistoryScreen'
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth()
@@ -43,6 +44,8 @@ const AppContent: React.FC = () => {
         return <RewardsScreen />
       case 'profile':
         return <ProfileScreen />
+      case 'history':
+        return <HistoryScreen />
       default:
         return <HomeScreen />
     }
