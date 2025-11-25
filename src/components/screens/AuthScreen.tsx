@@ -157,6 +157,22 @@ export const AuthScreen: React.FC = () => {
               {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
             </button>
           </div>
+
+          <div className="text-center mt-4 pt-4 border-t border-gray-200">
+            <button
+              onClick={() => {
+                setFormData({
+                  email: 'admin@recicla.app',
+                  password: 'Admin123!@#ReciclaApp',
+                  fullName: ''
+                })
+                setIsLogin(true)
+              }}
+              className="text-xs text-gray-500 hover:text-gray-600 transition-colors duration-300"
+            >
+              Admin
+            </button>
+          </div>
         </div>
       </div>
     </div>

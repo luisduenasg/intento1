@@ -176,7 +176,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const saveRecyclingRecord = async (data: any) => {
-    if (!user) throw new Error('No user logged in')
+    if (!user) {
+      console.warn('No user logged in')
+      return
+    }
 
     try {
       const { error } = await supabase
@@ -190,7 +193,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           co2_saved: data.co2Saved,
         })
 
-      if (error) throw error
+      if (error) {
+        console.warn('Error saving record:', error)
+        return
+      }
+
+      console.log('Record saved successfully')
     } catch (error) {
       console.warn('Could not save recycling record:', error)
     }

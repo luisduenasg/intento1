@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Download, BarChart3, Calendar, Package } from 'lucide-react'
+import { Download, BarChart3, Calendar, Package, AlertCircle } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../contexts/AuthContext'
 import * as XLSX from 'xlsx'
 
 interface RecyclingRecord {
   id: string
+  user_id: string
   material_type: string
   weight: number
   location: string
@@ -15,7 +16,7 @@ interface RecyclingRecord {
 }
 
 export const HistoryScreen: React.FC = () => {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const [records, setRecords] = useState<RecyclingRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
@@ -26,17 +27,18 @@ export const HistoryScreen: React.FC = () => {
   })
 
   useEffect(() => {
-    if (user) {
+    if (user && profile?.is_admin) {
       fetchRecords()
+    } else {
+      setLoading(false)
     }
-  }, [user])
+  }, [user, profile])
 
   const fetchRecords = async () => {
     try {
       const { data, error } = await supabase
         .from('recycling_records')
         .select('*')
-        .eq('user_id', user?.id)
         .order('created_at', { ascending: false })
 
       if (error) throw error
@@ -112,11 +114,21 @@ export const HistoryScreen: React.FC = () => {
     return names[material] || material
   }
 
+  if (!profile?.is_admin) {
+    return (
+      <div className="flex flex-col h-full items-center justify-center px-6">
+        <AlertCircle className="text-red-500 mb-4" size={48} />
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">Acceso Restringido</h1>
+        <p className="text-gray-600 text-center">Solo los administradores pueden acceder al historial y exportar datos.</p>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col h-full">
       <div className="px-6 py-4 border-b border-gray-100">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Historial de Reciclaje</h1>
-        <p className="text-gray-600">Gestiona y exporta tus registros de reciclaje</p>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">Historial de Reciclaje (Admin)</h1>
+        <p className="text-gray-600">Gestiona y exporta todos los registros de reciclaje</p>
       </div>
 
       <div className="flex-1 px-6 py-4 space-y-6 overflow-y-auto pb-20">
