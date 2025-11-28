@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { NotificationsProvider } from './contexts/NotificationsContext'
 //import { PhoneFrame } from './components/PhoneFrame'
 import { BottomNavigation } from './components/BottomNavigation'
 import { AuthScreen } from './components/screens/AuthScreen'
@@ -9,6 +10,7 @@ import { MapScreen } from './components/screens/MapScreen'
 import { RewardsScreen } from './components/screens/RewardsScreen'
 import { ProfileScreen } from './components/screens/ProfileScreen'
 import { HistoryScreen } from './components/screens/HistoryScreen'
+import { NotificationsScreen } from './components/screens/NotificationsScreen'
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth()
@@ -46,6 +48,8 @@ const AppContent: React.FC = () => {
         return <ProfileScreen />
       case 'history':
         return <HistoryScreen />
+      case 'notifications':
+        return <NotificationsScreen />
       default:
         return <HomeScreen />
     }
@@ -64,7 +68,9 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <NotificationsProvider>
+        <AppContent />
+      </NotificationsProvider>
     </AuthProvider>
   )
 }

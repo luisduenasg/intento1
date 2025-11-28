@@ -1,6 +1,7 @@
 import React from 'react'
 import { Bell, Zap, Target, Award, TrendingUp, Recycle, Trophy } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
+import { useNotifications } from '../../contexts/NotificationsContext'
 import { missions } from '../../data/missions'
 import { achievements } from '../../data/achievements'
 import { RecycleModal } from '../modals/RecycleModal'
@@ -14,6 +15,7 @@ interface HomeScreenProps {
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   const { profile, updateProfile, saveRecyclingRecord } = useAuth()
+  const { addNotification, unreadCount } = useNotifications()
   const [showRecycleModal, setShowRecycleModal] = React.useState(false)
   const [showMissionModal, setShowMissionModal] = React.useState(false)
   const [selectedMission, setSelectedMission] = React.useState<Mission | null>(null)
@@ -43,6 +45,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         total_recycled: profile.total_recycled + parseFloat(data.weight || '1')
       })
       await saveRecyclingRecord(data)
+
+      const getMaterialName = (type: string) => {
+        const names: { [key: string]: string } = {
+          'plastic': 'plástico',
+          'paper': 'papel',
+          'glass': 'vidrio',
+          'electronic': 'electrónico'
+        }
+        return names[type] || type
+      }
+
+      addNotification({
+        type: 'recycle',
+        title: 'Nuevo Reciclaje',
+        message: `${profile.full_name} registró ${data.weight}kg de ${getMaterialName(data.materialType)}`,
+        userEmail: profile.email
+      })
     }
 
     setSuccessData(data)
@@ -95,11 +114,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
           <h1 className="text-2xl font-bold text-emerald-800">¡Hola!</h1>
           <p className="text-emerald-600">{profile?.full_name || 'Usuario'}</p>
         </div>
-        <button className="relative p-3 bg-emerald-100 rounded-full">
+        <button
+          onClick={() => onNavigate && onNavigate('notifications')}
+          className="relative p-3 bg-emerald-100 rounded-full hover:bg-emerald-200 transition-colors duration-300"
+        >
           <Bell className="text-emerald-600" size={20} />
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-            <span className="text-white text-xs font-bold">3</span>
-          </div>
+          {unreadCount > 0 && (
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-xs font-bold">{unreadCount > 9 ? '9+' : unreadCount}</span>
+            </div>
+          )}
         </button>
       </div>
 

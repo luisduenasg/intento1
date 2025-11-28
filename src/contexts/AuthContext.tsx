@@ -131,15 +131,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       // Always use mock authentication since Supabase is not configured
       console.warn('Using mock authentication for signin')
-      const mockUser = { id: 'mock-user-' + Date.now(), email }
+
+      // Check if this is the admin account
+      const isAdmin = email === 'admin@recicla.app' && password === 'Admin123!@#ReciclaApp'
+
+      const mockUser = { id: 'admin-user-001', email }
       setUser(mockUser as any)
       setProfile({
         id: mockUser.id,
         email,
-        full_name: 'Usuario Demo',
-        points: 5000,
-        level: 3,
-        total_recycled: 45
+        full_name: 'Administrador',
+        points: 0,
+        level: 1,
+        total_recycled: 0,
+        is_admin: isAdmin
       })
       return { user: mockUser, session: null }
     }

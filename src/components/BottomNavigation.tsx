@@ -1,5 +1,6 @@
 import React from 'react'
 import { Home, Map, Gift, User, Target, BarChart3 } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 
 interface BottomNavigationProps {
   activeTab: string
@@ -7,14 +8,26 @@ interface BottomNavigationProps {
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabChange }) => {
-  const tabs = [
+  const { profile } = useAuth()
+
+  const baseTabs = [
     { id: 'home', icon: Home, label: 'Inicio' },
     { id: 'missions', icon: Target, label: 'Misiones' },
-    { id: 'history', icon: BarChart3, label: 'Historial' },
     { id: 'map', icon: Map, label: 'Mapa' },
     { id: 'rewards', icon: Gift, label: 'Recompensas' },
     { id: 'profile', icon: User, label: 'Perfil' },
   ]
+
+  const tabs = profile?.is_admin
+    ? [
+        { id: 'home', icon: Home, label: 'Inicio' },
+        { id: 'missions', icon: Target, label: 'Misiones' },
+        { id: 'history', icon: BarChart3, label: 'Historial' },
+        { id: 'map', icon: Map, label: 'Mapa' },
+        { id: 'rewards', icon: Gift, label: 'Recompensas' },
+        { id: 'profile', icon: User, label: 'Perfil' },
+      ]
+    : baseTabs
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-emerald-200/50">
