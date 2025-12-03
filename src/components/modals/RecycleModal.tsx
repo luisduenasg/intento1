@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { X, Camera, QrCode, Package, Scale, MapPin, Zap } from 'lucide-react'
+import { QRScanner } from '../QRScanner'
 
 interface RecycleModalProps {
   isOpen: boolean
@@ -9,11 +10,13 @@ interface RecycleModalProps {
 
 export const RecycleModal: React.FC<RecycleModalProps> = ({ isOpen, onClose, onComplete }) => {
   const [step, setStep] = useState(1)
+  const [showScanner, setShowScanner] = useState(false)
   const [formData, setFormData] = useState({
     materialType: '',
     weight: '',
     location: '',
-    qrScanned: false
+    qrScanned: false,
+    qrData: ''
   })
 
   const materials = [
@@ -42,8 +45,19 @@ export const RecycleModal: React.FC<RecycleModalProps> = ({ isOpen, onClose, onC
     })
 
     setStep(1)
-    setFormData({ materialType: '', weight: '', location: '', qrScanned: false })
+    setFormData({ materialType: '', weight: '', location: '', qrScanned: false, qrData: '' })
+    setShowScanner(false)
     onClose()
+  }
+
+  const handleQRScan = (qrData: string) => {
+    setFormData(prev => ({
+      ...prev,
+      qrScanned: true,
+      qrData: qrData
+    }))
+    setShowScanner(false)
+    setTimeout(() => setStep(2), 500)
   }
 
   if (!isOpen) return null
@@ -94,34 +108,46 @@ export const RecycleModal: React.FC<RecycleModalProps> = ({ isOpen, onClose, onC
                 </p>
               </div>
 
-              <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-2xl p-4 border border-blue-200">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Camera className="text-blue-600" size={20} />
-                  <span className="font-medium text-blue-800">Simulación de Escaneo</span>
+              {formData.qrScanned && (
+                <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-4 border border-emerald-200">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">✓</span>
+                    </div>
+                    <span className="font-bold text-emerald-700">QR Escaneado Exitosamente</span>
+                  </div>
+                  <p className="text-emerald-600 text-sm break-all">
+                    {formData.qrData}
+                  </p>
                 </div>
-                <p className="text-blue-700 text-sm mb-4">
-                  En la versión real, aquí se abriría la cámara para escanear el QR del centro autorizado.
-                </p>
-                <button
-                  onClick={() => {
-                    setFormData({ ...formData, qrScanned: true })
-                    setTimeout(() => setStep(2), 1000)
-                  }}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition-colors duration-300"
-                >
-                  {formData.qrScanned ? '✅ QR Escaneado' : '📷 Simular Escaneo'}
-                </button>
-              </div>
+              )}
 
-              <div className="text-center">
+              <div className="flex flex-col space-y-3">
+                <button
+                  onClick={() => setShowScanner(true)}
+                  disabled={formData.qrScanned}
+                  className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2"
+                >
+                  <Camera size={20} />
+                  <span>{formData.qrScanned ? '✓ QR Escaneado' : 'Abrir Cámara'}</span>
+                </button>
+
                 <button
                   onClick={() => setStep(2)}
-                  className="text-emerald-600 hover:text-emerald-700 font-medium text-sm"
+                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl transition-colors duration-300"
                 >
-                  Continuar sin escanear (modo demo)
+                  Continuar sin escanear
                 </button>
               </div>
             </div>
+          )}
+
+          {/* QR Scanner Modal */}
+          {showScanner && (
+            <QRScanner
+              onScan={handleQRScan}
+              onClose={() => setShowScanner(false)}
+            />
           )}
 
           {/* Step 2: Seleccionar Material */}
