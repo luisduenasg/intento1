@@ -7,6 +7,7 @@ import { achievements } from '../../data/achievements'
 import { RecycleModal } from '../modals/RecycleModal'
 import { MissionDetailModal } from '../modals/MissionDetailModal'
 import { SuccessModal } from '../modals/SuccessModal'
+import { TipsCarousel } from '../TipsCarousel'
 import { Mission } from '../../types/missions'
 
 interface HomeScreenProps {
@@ -165,6 +166,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Tips Carousel */}
+        <div className="space-y-3">
+          <h3 className="text-lg font-bold text-emerald-800">Consejos para Reciclar</h3>
+          <TipsCarousel />
         </div>
 
         {/* Quick Actions */}
