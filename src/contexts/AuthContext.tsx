@@ -187,23 +187,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
+      const userId = user.id
+
       const { error } = await supabase
         .from('recycling_records')
         .insert({
-          user_id: user.id,
-          material_type: data.materialType,
-          weight: parseFloat(data.weight),
+          user_id: userId,
+          material_type: data.materialType || data.material_type,
+          weight: parseFloat(data.weight || 0),
           location: data.location || 'No especificado',
-          points_earned: data.points,
-          co2_saved: data.co2Saved,
+          points_earned: parseInt(data.points || 0),
+          co2_saved: parseFloat(data.co2Saved || 0),
         })
 
       if (error) {
-        console.warn('Error saving record:', error)
-        return
+        console.error('Error saving record to Supabase:', error)
+        throw error
       }
 
-      console.log('Record saved successfully')
+      console.log('Recycling record saved successfully')
     } catch (error) {
       console.warn('Could not save recycling record:', error)
     }
